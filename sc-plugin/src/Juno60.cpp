@@ -56,9 +56,16 @@ public:
 private:
     void next(int nSamples) {
         // Get input parameters
-        const float* gate = in(0);
-        const float* freq = in(1);
-        const float* amp = in(2);
+        const float* gateIn = in(0);
+        const float* freqIn = in(1);
+        const float* ampIn = in(2);
+        const bool gateIsAudioRate = inRate(0) == calc_FullRate;
+        const bool noteIsAudioRate = inRate(1) == calc_FullRate;
+        const bool ampIsAudioRate = inRate(2) == calc_FullRate;
+        const float gateValue = gateIn[0];
+        const float noteValue = freqIn[0];
+        const float ampValue = ampIn[0];
+        const int doneAction = static_cast<int>(in0(16));
         
         // Attack, Decay, Sustain, Release
         const float attack = in0(3);
@@ -107,31 +114,56 @@ private:
         
         // Process gate and trigger notes
         for (int i = 0; i < nSamples; i++) {
-            if (gate[i] > 0.5f && mPrevGate <= 0.5f) {
-                // Note on
-                int note = static_cast<int>(freq[i]);
-                if (note < 0) note = 0;
-                if (note > 127) note = 127;
-                float velocity = amp[i];
-                if (velocity < 0.0f) velocity = 0.0f;
-                if (velocity > 1.0f) velocity = 1.0f;
-                synth->noteOn(note, velocity);
-            } else if (gate[i] <= 0.5f && mPrevGate > 0.5f) {
-                // Note off
-                int note = static_cast<int>(freq[i]);
-                if (note < 0) note = 0;
-                if (note > 127) note = 127;
-                synth->noteOff(note);
+            const float gateSample = gateIsAudioRate ? gateIn[i] : gateValue;
+            const float noteSample = noteIsAudioRate ? freqIn[i] : noteValue;
+            const float ampSample = ampIsAudioRate ? ampIn[i] : ampValue;
+            int desiredNote = static_cast<int>(noteSample);
+            if (desiredNote < 0) desiredNote = 0;
+            if (desiredNote > 127) desiredNote = 127;
+            float velocity = ampSample;
+            if (velocity < 0.0f) velocity = 0.0f;
+            if (velocity > 1.0f) velocity = 1.0f;
+
+            if (gateSample > 0.5f && mPrevGate <= 0.5f) {
+                // Gate on -> start note
+                synth->noteOn(desiredNote, velocity);
+                mActiveNote = desiredNote;
+                mReleasePending = false;
+                mPendingDoneAction = 0;
+            } else if (gateSample > 0.5f && mPrevGate > 0.5f) {
+                // Gate held: allow note changes for mono playing
+                if (desiredNote != mActiveNote && mActiveNote >= 0) {
+                    synth->noteOff(mActiveNote);
+                    synth->noteOn(desiredNote, velocity);
+                    mActiveNote = desiredNote;
+                }
+            } else if (gateSample <= 0.5f && mPrevGate > 0.5f) {
+                // Gate released -> note off
+                if (mActiveNote >= 0) {
+                    synth->noteOff(mActiveNote);
+                }
+                mActiveNote = -1;
+                mPendingDoneAction = doneAction;
+                mReleasePending = (mPendingDoneAction > 0);
             }
-            mPrevGate = gate[i];
+            mPrevGate = gateSample;
         }
         
         // Render audio
         synth->render(outL, outR, nSamples);
+
+        if (mReleasePending && mPendingDoneAction > 0 && !synth->isActive()) {
+            DoneAction(mPendingDoneAction, this);
+            mReleasePending = false;
+            mPendingDoneAction = 0;
+        }
     }
 
     junox::Junox* synth;
     float mPrevGate = 0.0f;
+    int mActiveNote = -1;
+    int mPendingDoneAction = 0;
+    bool mReleasePending = false;
 };
 
 } // namespace Juno60

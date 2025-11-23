@@ -3,26 +3,26 @@ Juno60 : MultiOutUGen {
           attack=0, decay=0.5, sustain=0.5, release=0.5,
           cutoff=0.5, resonance=0, envMod=0,
           saw=1, pulse=0, sub=0, noise=0, pwm=0.5,
-          chorus=0;
+          chorus=0, doneAction=0;
         
         ^this.multiNew('audio', gate, note, amp,
             attack, decay, sustain, release,
             cutoff, resonance, envMod,
             saw, pulse, sub, noise, pwm,
-            chorus)
+            chorus, doneAction)
     }
     
     *kr { arg gate=0, note=60, amp=0.5,
           attack=0, decay=0.5, sustain=0.5, release=0.5,
           cutoff=0.5, resonance=0, envMod=0,
           saw=1, pulse=0, sub=0, noise=0, pwm=0.5,
-          chorus=0;
+          chorus=0, doneAction=0;
         
         ^this.multiNew('control', gate, note, amp,
             attack, decay, sustain, release,
             cutoff, resonance, envMod,
             saw, pulse, sub, noise, pwm,
-            chorus)
+            chorus, doneAction)
     }
     
     checkInputs {

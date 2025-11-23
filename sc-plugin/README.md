@@ -64,6 +64,7 @@ make SC_PATH=/path/to/supercollider install
 - `noise`: Noise level (0-1)
 - `pwm`: Pulse width modulation (0-1)
 - `chorus`: Chorus mode (0=off, 1=I, 2=II, 3=I+II)
+- `doneAction`: DoneAction to perform when the release segment finishes (0=none, 2=free synth, etc.)
 
 ### Example
 

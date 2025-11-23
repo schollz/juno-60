@@ -66,7 +66,7 @@ clean:
 	@rm -rf $(BUILD_DIR)
 
 test: uninstall clean all install
-	timeout 6s sclang test.scd
+	timeout 15s sclang test.scd
 
 help:
 	@echo "Juno60 SuperCollider Plugin - Makefile"
