@@ -18,7 +18,7 @@ jobs:
       uses: actions/checkout@v4
     
     - name: Cache SuperCollider source
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: supercollider
         key: ${{ runner.os }}-supercollider-3.14.0
@@ -44,13 +44,27 @@ jobs:
         # Start JACK in dummy (no audio output) mode in the background
         jackd -d dummy -r 48000 -p 1024 &
         JACK_PID=$!
+        
+        # Verify JACK started successfully
+        if ! kill -0 $JACK_PID 2>/dev/null; then
+          echo "Error: JACK failed to start"
+          exit 1
+        fi
+        
         echo "JACK_PID=$JACK_PID" >> $GITHUB_ENV
         
-        # Wait for JACK to start
-        sleep 2
+        # Wait for JACK to be ready with retry loop
+        for i in {1..10}; do
+          if jack_lsp >/dev/null 2>&1; then
+            echo "JACK is ready"
+            break
+          fi
+          echo "Waiting for JACK to be ready... (attempt $i/10)"
+          sleep 1
+        done
         
-        # Verify JACK is running
-        jack_lsp || echo "JACK started in dummy mode"
+        # Final verification
+        jack_lsp || echo "Warning: JACK may not be fully ready"
     
     - name: Build plugin
       run: make
