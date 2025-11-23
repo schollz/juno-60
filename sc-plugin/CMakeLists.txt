@@ -86,6 +86,6 @@ install(FILES Juno60.sc
 
 # Custom uninstall target
 add_custom_target(uninstall
-    COMMAND ${CMAKE_COMMAND} -E remove_directory "${EXTENSION_DIR}/Juno60"
+    COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_INSTALL_PREFIX}/${INSTALL_DEST}"
     COMMENT "Uninstalling Juno60 plugin"
 )
