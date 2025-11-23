@@ -120,7 +120,7 @@ private:
             } else if (gate[i] <= 0.5f && mPrevGate > 0.5f) {
                 // Note off - gate went from high to low
                 // Use the note that was triggered when gate went high
-                if (mCurrentNote >= 0) {
+                if (mCurrentNote >= 0 && mCurrentNote <= 127) {
                     synth->noteOff(mCurrentNote);
                 }
             }
