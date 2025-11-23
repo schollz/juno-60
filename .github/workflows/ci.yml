@@ -78,8 +78,6 @@ jobs:
       run: |
         # Run with xvfb for headless display support
         xvfb-run -a make test
-      env:
-        DISPLAY: :99
     
     - name: Stop JACK
       if: always()
