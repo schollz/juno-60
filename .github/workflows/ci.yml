@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          cmake \
+          git \
+          pkg-config \
+          libjack-jackd2-dev \
+          jackd2 \
+          supercollider
+    
+    - name: Start JACK in dummy mode
+      run: |
+        # Start JACK in dummy (no audio output) mode in the background
+        jackd -d dummy -r 48000 -p 1024 &
+        JACK_PID=$!
+        echo "JACK_PID=$JACK_PID" >> $GITHUB_ENV
+        
+        # Wait for JACK to start
+        sleep 2
+        
+        # Verify JACK is running
+        jack_lsp || echo "JACK started in dummy mode"
+    
+    - name: Build plugin
+      run: make
+    
+    - name: Install plugin
+      run: make install
+    
+    - name: Run tests
+      run: make test
+    
+    - name: Stop JACK
+      if: always()
+      run: |
+        # Clean up JACK process
+        if [ -n "$JACK_PID" ]; then
+          kill $JACK_PID || true
+        fi
