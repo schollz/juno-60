@@ -57,7 +57,7 @@ private:
     void next(int nSamples) {
         // Get input parameters
         const float* gate = in(0);
-        const float* note = in(1);
+        const float* freq = in(1);
         const float* amp = in(2);
         
         // Attack, Decay, Sustain, Release
@@ -108,18 +108,17 @@ private:
         // Process gate and trigger notes
         for (int i = 0; i < nSamples; i++) {
             if (gate[i] > 0.5f && mPrevGate <= 0.5f) {
-                // Note on - gate went from low to high
-                int noteNum = static_cast<int>(note[i]);
-                if (noteNum < 0) noteNum = 0;
-                if (noteNum > 127) noteNum = 127;
+                // Note on
+                int note = static_cast<int>(freq[i]);
+                if (note < 0) note = 0;
+                if (note > 127) note = 127;
                 float velocity = amp[i];
                 if (velocity < 0.0f) velocity = 0.0f;
                 if (velocity > 1.0f) velocity = 1.0f;
-                synth->noteOn(noteNum, velocity);
-                mCurrentNote = noteNum;
+                synth->noteOn(note, velocity);
+                mCurrentNote = note;  // Store the note that was triggered
             } else if (gate[i] <= 0.5f && mPrevGate > 0.5f) {
-                // Note off - gate went from high to low
-                // Use the note that was triggered when gate went high
+                // Note off - use the stored note number
                 if (mCurrentNote >= 0 && mCurrentNote <= 127) {
                     synth->noteOff(mCurrentNote);
                 }
