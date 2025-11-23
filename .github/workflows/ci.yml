@@ -22,6 +22,7 @@ jobs:
         key: ${{ runner.os }}-supercollider-3.14.0
         restore-keys: |
           ${{ runner.os }}-supercollider-
+      # This caches the SuperCollider source that 'make' clones via sc-setup target
     
     - name: Install system dependencies
       run: |
@@ -34,6 +35,7 @@ jobs:
           libjack-jackd2-dev \
           jackd2 \
           supercollider
+      # supercollider package provides sclang binary, source is cloned by make
     
     - name: Start JACK in dummy mode
       run: |
