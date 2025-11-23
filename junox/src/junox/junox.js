@@ -236,8 +236,8 @@ export default class Junox {
     }
 
     // Relative volumes of each source.
-    let sawLevel = this.patch.dco.saw ? 0.2 : 0.0
-    let pulseLevel = this.patch.dco.pulse ? 0.2 : 0.0
+    let sawLevel = this.patch.dco.saw * 0.2
+    let pulseLevel = this.patch.dco.pulse * 0.2
     let subLevel = this.patch.dco.sub ? this.patch.dco.subAmount * 0.195 : 0.0
     let noiseLevel = this.patch.dco.noise * 0.21
 

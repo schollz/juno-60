@@ -235,8 +235,8 @@ public:
         }
 
         // Calculate source levels
-        float sawLevel = patch.dco.saw ? 0.2f : 0.0f;
-        float pulseLevel = patch.dco.pulse ? 0.2f : 0.0f;
+        float sawLevel = patch.dco.saw * 0.2f;
+        float pulseLevel = patch.dco.pulse * 0.2f;
         float subLevel = patch.dco.subAmount * 0.195f;
         float noiseLevel = patch.dco.noise * 0.21f;
 

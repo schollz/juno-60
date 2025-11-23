@@ -99,7 +99,7 @@ export default class Voice {
     }
 
     // If the patch has no sound-source then assume that it is trying to use the filter as the source.
-    if (!this.patch.dco.saw && !this.patch.dco.pulse && !this.patch.dco.subAmount && !this.patch.dco.noise) {
+    if (this.patch.dco.saw < 0.01 && this.patch.dco.pulse < 0.01 && this.patch.dco.subAmount < 0.01 && this.patch.dco.noise < 0.01) {
       const initialExcite = this.patch.vcf.resonance * this.patch.vcf.resonance * 0.01
       this.moogVCF.trigger(initialExcite)
     }

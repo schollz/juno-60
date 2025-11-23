@@ -11,8 +11,8 @@ namespace junox {
 // Patch structure for voice configuration
 struct Patch {
     struct DCO {
-        bool saw = false;
-        bool pulse = false;
+        float saw = 0.0f;
+        float pulse = 0.0f;
         float subAmount = 0.0f;
         float noise = 0.0f;
         float lfo = 0.0f;
@@ -125,7 +125,7 @@ public:
         }
 
         // If no sound source, use filter as source
-        if (!patch.dco.saw && !patch.dco.pulse && !patch.dco.subAmount && !patch.dco.noise) {
+        if (patch.dco.saw < 0.01f && patch.dco.pulse < 0.01f && patch.dco.subAmount < 0.01f && patch.dco.noise < 0.01f) {
             const float initialExcite = patch.vcf.resonance * patch.vcf.resonance * 0.01f;
             moogVCF.trigger(initialExcite);
         }
