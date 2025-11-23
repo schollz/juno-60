@@ -15,8 +15,8 @@ public:
         
         // Initialize default patch
         junox::Patch patch;
-        patch.dco.saw = true;
-        patch.dco.pulse = false;
+        patch.dco.saw = 1.0f;
+        patch.dco.pulse = 0.0f;
         patch.dco.subAmount = 0.0f;
         patch.dco.noise = 0.0f;
         patch.dco.lfo = 0.0f;
@@ -143,8 +143,8 @@ private:
         patch.vcf.resonance = resonance;
         patch.vcf.envMod = envMod;
         
-        patch.dco.saw = sawOn > 0.5f;
-        patch.dco.pulse = pulseOn > 0.5f;
+        patch.dco.saw = sawOn;
+        patch.dco.pulse = pulseOn;
         patch.dco.subAmount = subLevel;
         patch.dco.noise = noiseLevel;
         patch.dco.pwm = pwm;
