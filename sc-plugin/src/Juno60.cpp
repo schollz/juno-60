@@ -8,7 +8,7 @@ namespace Juno60 {
 class Juno60 : public SCUnit {
 public:
     Juno60() {
-        const float sampleRate = sampleRate();
+        const float sr = static_cast<float>(sampleRate());
         
         // Initialize default patch
         junox::Patch patch;
@@ -43,7 +43,7 @@ public:
         
         patch.chorus.mode = 0;
         
-        synth = new junox::Junox(patch, sampleRate, 6);
+        synth = new junox::Junox(patch, sr, 6);
         
         mCalcFunc = make_calc_function<Juno60, &Juno60::next>();
         next(1);
@@ -85,22 +85,23 @@ private:
         float* outR = out(1);
         
         // Update patch from parameters
-        synth->patch.env.attack = attack;
-        synth->patch.env.decay = decay;
-        synth->patch.env.sustain = sustain;
-        synth->patch.env.release = release;
+        junox::Patch& patch = synth->getPatch();
+        patch.env.attack = attack;
+        patch.env.decay = decay;
+        patch.env.sustain = sustain;
+        patch.env.release = release;
         
-        synth->patch.vcf.frequency = cutoff;
-        synth->patch.vcf.resonance = resonance;
-        synth->patch.vcf.envMod = envMod;
+        patch.vcf.frequency = cutoff;
+        patch.vcf.resonance = resonance;
+        patch.vcf.envMod = envMod;
         
-        synth->patch.dco.saw = sawOn > 0.5f;
-        synth->patch.dco.pulse = pulseOn > 0.5f;
-        synth->patch.dco.subAmount = subLevel;
-        synth->patch.dco.noise = noiseLevel;
-        synth->patch.dco.pwm = pwm;
+        patch.dco.saw = sawOn > 0.5f;
+        patch.dco.pulse = pulseOn > 0.5f;
+        patch.dco.subAmount = subLevel;
+        patch.dco.noise = noiseLevel;
+        patch.dco.pwm = pwm;
         
-        synth->patch.chorus.mode = static_cast<int>(chorusMode);
+        patch.chorus.mode = static_cast<int>(chorusMode);
         
         synth->update();
         

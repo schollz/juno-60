@@ -3,8 +3,11 @@
 # SuperCollider path - can be overridden with make SC_PATH=/path/to/sc
 SC_PATH ?= $(shell pwd)/supercollider
 
+# Plugin directory
+PLUGIN_DIR = sc-plugin
+
 # Build directory
-BUILD_DIR = build
+BUILD_DIR = $(PLUGIN_DIR)/build
 
 # CMake options
 CMAKE_FLAGS = -DSC_PATH=$(SC_PATH)
@@ -58,7 +61,7 @@ clean:
 test:
 	@echo "To test the plugin:"
 	@echo "1. Make sure SuperCollider is running"
-	@echo "2. Open test_juno60.scd in SuperCollider"
+	@echo "2. Open sc-plugin/test_juno60.scd in SuperCollider"
 	@echo "3. Execute the code blocks"
 
 help:

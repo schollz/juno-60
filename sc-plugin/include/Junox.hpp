@@ -269,6 +269,14 @@ public:
         voices.clear();
     }
 
+    Patch& getPatch() {
+        return patch;
+    }
+
+    const Patch& getPatch() const {
+        return patch;
+    }
+
 private:
     void setLfoValuesFromSliders(float rateSlider, float delaySlider) {
         static const float curveFromLfoRateSliderToFreq[] = {0.3f, 0.85f, 3.39f, 11.49f, 22.22f};
