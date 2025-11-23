@@ -36,8 +36,10 @@ jobs:
           pkg-config \
           libjack-jackd2-dev \
           jackd2 \
-          supercollider
+          supercollider \
+          xvfb
       # supercollider package provides sclang binary, source is cloned by make
+      # xvfb provides virtual display for headless SuperCollider execution
     
     - name: Start JACK in dummy mode
       run: |
@@ -73,7 +75,11 @@ jobs:
       run: make install
     
     - name: Run tests
-      run: make test
+      run: |
+        # Run with xvfb for headless display support
+        xvfb-run -a make test
+      env:
+        DISPLAY: :99
     
     - name: Stop JACK
       if: always()
