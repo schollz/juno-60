@@ -53,16 +53,20 @@ uninstall:
 		cd $(BUILD_DIR) && cmake .. $(CMAKE_FLAGS); \
 		$(MAKE) -C $(BUILD_DIR) uninstall; \
 	fi
+	@EXT_DIR="$(HOME)/.local/share/SuperCollider/Extensions"; \
+	if [ -d "$$EXT_DIR/Juno60" ]; then \
+		echo "Removing plugin from $$EXT_DIR/Juno60"; \
+		rm -rf "$$EXT_DIR/Juno60"; \
+	else \
+		echo "Plugin not found in $$EXT_DIR/Juno60"; \
+	fi
 
 clean:
 	@echo "Cleaning build files..."
 	@rm -rf $(BUILD_DIR)
 
-test:
-	@echo "To test the plugin:"
-	@echo "1. Make sure SuperCollider is running"
-	@echo "2. Open sc-plugin/test_juno60.scd in SuperCollider"
-	@echo "3. Execute the code blocks"
+test: uninstall clean install
+	timeout 6s sclang test.scd
 
 help:
 	@echo "Juno60 SuperCollider Plugin - Makefile"
