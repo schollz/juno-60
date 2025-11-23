@@ -43,7 +43,7 @@ public:
         
         patch.chorus.mode = 0;
         
-        synth = new junox::Junox(patch, sr, 6);
+        synth = new junox::Junox(patch, sr, 1);
         
         mCalcFunc = make_calc_function<Juno60, &Juno60::next>();
         next(1);
@@ -139,9 +139,7 @@ private:
                 }
             } else if (gateSample <= 0.5f && mPrevGate > 0.5f) {
                 // Gate released -> note off
-                if (mActiveNote >= 0) {
-                    synth->noteOff(mActiveNote);
-                }
+                synth->releaseAll();
                 mActiveNote = -1;
                 mPendingDoneAction = doneAction;
                 mReleasePending = (mPendingDoneAction > 0);

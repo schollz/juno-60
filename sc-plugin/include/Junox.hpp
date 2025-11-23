@@ -80,6 +80,14 @@ public:
         }
     }
 
+    void releaseAll() {
+        for (auto& voice : voices) {
+            if (!voice->isFinished()) {
+                voice->noteOff();
+            }
+        }
+    }
+
     void pitchBend(float value) {
         bendAmountParam.setValue(value);
     }

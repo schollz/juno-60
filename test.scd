@@ -8,7 +8,7 @@ s.waitForBoot({
 			attack: 2,
 			decay: 0.4,
 			sustain: 0.4,
-			release: 0.6,
+				release: 0.2,
 			cutoff: 0.8,
 			resonance: 0.3,
 			envMod: 0.4,
@@ -24,20 +24,20 @@ s.waitForBoot({
 	
 	s.sync;
 	
-	Routine {
-		["gate 1"].postln;
-		a = Synth("juno");
-		0.25.wait;
-		["note change"].postln;
-		a.set(\note, 67);
+		Routine {
+			["gate 1"].postln;
+			a = Synth("juno");
+			0.25.wait;
+			["note change"].postln;
+			a.set(\note, 67);
 		2.wait;
 		["gate 0"].postln;
 		a.set(\gate,0);
 		10.wait;
 		s.quit;
-		0.2.wait;
-		0.exit;
-	}.play;
+			0.2.wait;
+			0.exit;
+		}.play(SystemClock);
 
 });
 )
