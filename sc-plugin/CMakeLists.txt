@@ -71,9 +71,11 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
         set(EXTENSION_DIR "$ENV{HOME}/.local/share/SuperCollider/Extensions")
     endif()
     set(INSTALL_DEST "${EXTENSION_DIR}/Juno60")
+    set(UNINSTALL_PATH "${EXTENSION_DIR}/Juno60")
 else()
     # Respect CMAKE_INSTALL_PREFIX when explicitly set
     set(INSTALL_DEST "Juno60")
+    set(UNINSTALL_PATH "${CMAKE_INSTALL_PREFIX}/Juno60")
 endif()
 
 install(TARGETS Juno60
@@ -86,6 +88,6 @@ install(FILES Juno60.sc
 
 # Custom uninstall target
 add_custom_target(uninstall
-    COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_INSTALL_PREFIX}/${INSTALL_DEST}"
+    COMMAND ${CMAKE_COMMAND} -E remove_directory "${UNINSTALL_PATH}"
     COMMENT "Uninstalling Juno60 plugin"
 )
