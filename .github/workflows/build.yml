@@ -1,0 +1,131 @@
+name: Build Juno60
+
+on:
+  push:
+    branches: [ main, master, develop ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main, master, develop ]
+  release:
+    types: [ created ]
+
+permissions:
+  contents: write
+
+env:
+  SC_VERSION: Version-3.14.0
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS-arm64
+            os: macos-14
+            arch: arm64
+            artifact_suffix: macOS-arm64
+
+          - name: Windows-x64
+            os: windows-latest
+            arch: x64
+            artifact_suffix: Windows-x64
+
+          - name: Linux-x64
+            os: ubuntu-latest
+            arch: x64
+            artifact_suffix: Linux-x64
+
+          - name: Linux-arm64
+            os: ubuntu-latest
+            arch: arm64
+            artifact_suffix: Linux-arm64
+
+    steps:
+      - name: Checkout Juno60
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Checkout SuperCollider
+        uses: actions/checkout@v4
+        with:
+          repository: supercollider/supercollider
+          ref: ${{ env.SC_VERSION }}
+          path: supercollider
+          submodules: recursive
+
+      # Linux ARM64 cross-compilation setup
+      - name: Setup ARM64 cross-compilation (Linux ARM64 only)
+        if: matrix.os == 'ubuntu-latest' && matrix.arch == 'arm64'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+
+      # Configure CMake (Linux x64 and macOS)
+      - name: Configure CMake (Unix x64/ARM64 native)
+        if: (matrix.os == 'ubuntu-latest' && matrix.arch == 'x64') || matrix.os == 'macos-14'
+        run: |
+          cmake -B build \
+            -S sc-plugin \
+            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+            -DSC_PATH=${{ github.workspace }}/supercollider \
+            -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
+
+      # Configure CMake (Linux ARM64 cross-compile)
+      - name: Configure CMake (Linux ARM64 cross-compile)
+        if: matrix.os == 'ubuntu-latest' && matrix.arch == 'arm64'
+        run: |
+          cmake -B build \
+            -S sc-plugin \
+            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+            -DSC_PATH=${{ github.workspace }}/supercollider \
+            -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install \
+            -DCMAKE_SYSTEM_NAME=Linux \
+            -DCMAKE_SYSTEM_PROCESSOR=aarch64 \
+            -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc \
+            -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+
+      # Configure CMake (Windows)
+      - name: Configure CMake (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          cmake -B build `
+            -S sc-plugin `
+            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} `
+            -DSC_PATH=${{ github.workspace }}/supercollider `
+            -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
+
+      # Build
+      - name: Build
+        run: cmake --build build --config ${{ env.BUILD_TYPE }} --target install -j4
+
+      # Package
+      - name: Package (Unix)
+        if: matrix.os != 'windows-latest'
+        working-directory: ${{ github.workspace }}/install
+        run: zip -r ../Juno60-${{ matrix.artifact_suffix }}.zip Juno60
+
+      - name: Package (Windows)
+        if: matrix.os == 'windows-latest'
+        working-directory: ${{ github.workspace }}/install
+        run: Compress-Archive -Path Juno60 -DestinationPath ../Juno60-${{ matrix.artifact_suffix }}.zip
+
+      # Upload artifacts for all builds
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Juno60-${{ matrix.artifact_suffix }}
+          path: Juno60-${{ matrix.artifact_suffix }}.zip
+
+      # Upload to release (only on tag push)
+      - name: Upload to release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Juno60-${{ matrix.artifact_suffix }}.zip
+          overwrite_files: true
