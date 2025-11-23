@@ -1,6 +1,11 @@
 #pragma once
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 #include <cmath>
+#include <random>
 #include <string>
 
 namespace junox {
@@ -17,6 +22,8 @@ public:
         , currentValue(0.0f)
         , isRestarted(false)
         , waveform(Waveform::SINE)
+        , gen(std::random_device{}())
+        , dist(-1.0f, 1.0f)
     {
     }
 
@@ -56,10 +63,10 @@ public:
                 value = currentPhase > 0.5f ? -1.0f : 1.0f;
                 break;
             case Waveform::RANDOM:
-                value = isRestarted ? (std::rand() / (float)RAND_MAX * 2.0f - 1.0f) : currentValue;
+                value = isRestarted ? dist(gen) : currentValue;
                 break;
             case Waveform::NOISE:
-                value = std::rand() / (float)RAND_MAX * 2.0f - 1.0f;
+                value = dist(gen);
                 break;
             default: // Triangle
                 value = currentPhase * 4.0f;
@@ -90,6 +97,8 @@ private:
     float currentValue;
     bool isRestarted;
     Waveform waveform;
+    std::mt19937 gen;
+    std::uniform_real_distribution<float> dist;
 };
 
 } // namespace junox

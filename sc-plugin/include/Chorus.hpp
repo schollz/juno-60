@@ -141,7 +141,7 @@ private:
         // Transition to desired wet/dry ratio
         dryTarget = dry;
         if (!isUsed) {
-            dryChange = dry;
+            dryCurrent = dry;
         }
         dryChange = (dry - dryCurrent) / 1000.0f;
 

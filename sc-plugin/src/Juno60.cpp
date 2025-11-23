@@ -84,7 +84,7 @@ private:
         float* outL = out(0);
         float* outR = out(1);
         
-        // Update patch from parameters
+        // Update patch from parameters once per buffer
         junox::Patch& patch = synth->getPatch();
         patch.env.attack = attack;
         patch.env.decay = decay;
@@ -105,7 +105,7 @@ private:
         
         synth->update();
         
-        // Simple gate detection (trigger on rising edge)
+        // Process gate and trigger notes
         for (int i = 0; i < nSamples; i++) {
             if (gate[i] > 0.5f && mPrevGate <= 0.5f) {
                 // Note on
