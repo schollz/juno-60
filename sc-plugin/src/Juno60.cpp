@@ -106,26 +106,26 @@ private:
         synth->update();
         
         // Process gate and trigger notes
-        // Check gate transition at the beginning of the buffer
-        const float curGate = gate[0];
-        if (curGate > 0.5f && mPrevGate <= 0.5f) {
-            // Note on - gate went from low to high
-            int noteNum = static_cast<int>(note[0]);
-            if (noteNum < 0) noteNum = 0;
-            if (noteNum > 127) noteNum = 127;
-            float velocity = amp[0];
-            if (velocity < 0.0f) velocity = 0.0f;
-            if (velocity > 1.0f) velocity = 1.0f;
-            synth->noteOn(noteNum, velocity);
-            mCurrentNote = noteNum;
-        } else if (curGate <= 0.5f && mPrevGate > 0.5f) {
-            // Note off - gate went from high to low
-            // Use the note that was playing when gate went high
-            if (mCurrentNote >= 0) {
-                synth->noteOff(mCurrentNote);
+        for (int i = 0; i < nSamples; i++) {
+            if (gate[i] > 0.5f && mPrevGate <= 0.5f) {
+                // Note on - gate went from low to high
+                int noteNum = static_cast<int>(note[i]);
+                if (noteNum < 0) noteNum = 0;
+                if (noteNum > 127) noteNum = 127;
+                float velocity = amp[i];
+                if (velocity < 0.0f) velocity = 0.0f;
+                if (velocity > 1.0f) velocity = 1.0f;
+                synth->noteOn(noteNum, velocity);
+                mCurrentNote = noteNum;
+            } else if (gate[i] <= 0.5f && mPrevGate > 0.5f) {
+                // Note off - gate went from high to low
+                // Use the note that was triggered when gate went high
+                if (mCurrentNote >= 0) {
+                    synth->noteOff(mCurrentNote);
+                }
             }
+            mPrevGate = gate[i];
         }
-        mPrevGate = curGate;
         
         // Render audio
         synth->render(outL, outR, nSamples);
