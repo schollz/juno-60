@@ -116,11 +116,11 @@ private:
                 if (velocity < 0.0f) velocity = 0.0f;
                 if (velocity > 1.0f) velocity = 1.0f;
                 synth->noteOn(note, velocity);
-                mCurrentNote = note;  // Store the note that was triggered
+                mLastTriggeredNote = note;  // Store for release
             } else if (gate[i] <= 0.5f && mPrevGate > 0.5f) {
-                // Note off - use the stored note number
-                if (mCurrentNote >= 0 && mCurrentNote <= 127) {
-                    synth->noteOff(mCurrentNote);
+                // Note off - use last triggered note
+                if (mLastTriggeredNote >= 0 && mLastTriggeredNote <= 127) {
+                    synth->noteOff(mLastTriggeredNote);
                 }
             }
             mPrevGate = gate[i];
@@ -132,7 +132,7 @@ private:
 
     junox::Junox* synth;
     float mPrevGate = 0.0f;
-    int mCurrentNote = -1;
+    int mLastTriggeredNote = -1;
 };
 
 } // namespace Juno60
