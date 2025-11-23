@@ -28,7 +28,7 @@ s.waitForBoot({
 			lfoAuto: 0,
 			dcoLfo: 0.05,
 			dcoPwmMod: 1,
-			dcoRange: 1.0,
+			dcoRange: MouseY.kr(0.5, 2.0),  // Control oscillator range with mouse Y position
 			hpf: 0.0,
 			vcfLfo: 0.0,
 			vcfKey: 0.8,
