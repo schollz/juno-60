@@ -57,7 +57,7 @@ private:
     void next(int nSamples) {
         // Get input parameters
         const float* gate = in(0);
-        const float* freq = in(1);
+        const float* note = in(1);
         const float* amp = in(2);
         
         // Attack, Decay, Sustain, Release
@@ -106,25 +106,26 @@ private:
         synth->update();
         
         // Process gate and trigger notes
-        for (int i = 0; i < nSamples; i++) {
-            if (gate[i] > 0.5f && mPrevGate <= 0.5f) {
-                // Note on
-                int note = static_cast<int>(freq[i]);
-                if (note < 0) note = 0;
-                if (note > 127) note = 127;
-                float velocity = amp[i];
-                if (velocity < 0.0f) velocity = 0.0f;
-                if (velocity > 1.0f) velocity = 1.0f;
-                synth->noteOn(note, velocity);
-            } else if (gate[i] <= 0.5f && mPrevGate > 0.5f) {
-                // Note off
-                int note = static_cast<int>(freq[i]);
-                if (note < 0) note = 0;
-                if (note > 127) note = 127;
-                synth->noteOff(note);
+        // Check gate transition at the beginning of the buffer
+        const float curGate = gate[0];
+        if (curGate > 0.5f && mPrevGate <= 0.5f) {
+            // Note on - gate went from low to high
+            int noteNum = static_cast<int>(note[0]);
+            if (noteNum < 0) noteNum = 0;
+            if (noteNum > 127) noteNum = 127;
+            float velocity = amp[0];
+            if (velocity < 0.0f) velocity = 0.0f;
+            if (velocity > 1.0f) velocity = 1.0f;
+            synth->noteOn(noteNum, velocity);
+            mCurrentNote = noteNum;
+        } else if (curGate <= 0.5f && mPrevGate > 0.5f) {
+            // Note off - gate went from high to low
+            // Use the note that was playing when gate went high
+            if (mCurrentNote >= 0) {
+                synth->noteOff(mCurrentNote);
             }
-            mPrevGate = gate[i];
         }
+        mPrevGate = curGate;
         
         // Render audio
         synth->render(outL, outR, nSamples);
@@ -132,6 +133,7 @@ private:
 
     junox::Junox* synth;
     float mPrevGate = 0.0f;
+    int mCurrentNote = -1;
 };
 
 } // namespace Juno60

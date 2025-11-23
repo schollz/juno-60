@@ -7,12 +7,12 @@ s.boot;
 (
 // Test 1: Basic sawtooth sound
 {
-    var gate, freq, sig;
+    var gate, note, sig;
     gate = Impulse.kr(2);  // Trigger notes
-    freq = 60;  // MIDI note 60 (middle C)
+    note = 60;  // MIDI note 60 (middle C)
     sig = Juno60.ar(
         gate: gate,
-        freq: freq,
+        note: note,
         amp: 0.5,
         attack: 0.01,
         decay: 0.3,
@@ -35,12 +35,12 @@ s.boot;
 (
 // Test 2: Pulse wave with PWM
 {
-    var gate, freq, sig;
+    var gate, note, sig;
     gate = Impulse.kr(1);
-    freq = 48;  // Lower note
+    note = 48;  // Lower note
     sig = Juno60.ar(
         gate: gate,
-        freq: freq,
+        note: note,
         amp: 0.6,
         attack: 0.02,
         decay: 0.5,
@@ -63,12 +63,12 @@ s.boot;
 (
 // Test 3: Mixed waveforms with chorus
 {
-    var gate, freq, sig;
+    var gate, note, sig;
     gate = Impulse.kr(1.5);
-    freq = Seq([60, 64, 67, 72]).kr(gate);  // Arpeggio
+    note = Seq([60, 64, 67, 72]).kr(gate);  // Arpeggio
     sig = Juno60.ar(
         gate: gate,
-        freq: freq,
+        note: note,
         amp: 0.5,
         attack: 0.05,
         decay: 0.4,
@@ -91,12 +91,12 @@ s.boot;
 (
 // Test 4: Bass sound with sub oscillator
 {
-    var gate, freq, sig;
+    var gate, note, sig;
     gate = Impulse.kr(2);
-    freq = 36;  // Low C
+    note = 36;  // Low C
     sig = Juno60.ar(
         gate: gate,
-        freq: freq,
+        note: note,
         amp: 0.7,
         attack: 0.001,
         decay: 0.3,
@@ -119,12 +119,12 @@ s.boot;
 (
 // Test 5: Pad sound with chorus
 {
-    var gate, freq, sig;
+    var gate, note, sig;
     gate = Impulse.kr(0.5);
-    freq = Seq([60, 64, 67, 64]).kr(gate);
+    note = Seq([60, 64, 67, 64]).kr(gate);
     sig = Juno60.ar(
         gate: gate,
-        freq: freq,
+        note: note,
         amp: 0.4,
         attack: 0.5,
         decay: 0.3,
@@ -147,12 +147,12 @@ s.boot;
 (
 // Test 6: Lead sound with high resonance
 {
-    var gate, freq, sig;
+    var gate, note, sig;
     gate = Impulse.kr(4);
-    freq = Seq([72, 74, 76, 77, 76, 74]).kr(gate);
+    note = Seq([72, 74, 76, 77, 76, 74]).kr(gate);
     sig = Juno60.ar(
         gate: gate,
-        freq: freq,
+        note: note,
         amp: 0.6,
         attack: 0.01,
         decay: 0.2,
