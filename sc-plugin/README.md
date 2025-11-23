@@ -118,6 +118,25 @@ The plugin is organized into modular C++ classes:
 - `Noise`: Pink noise generator
 - `SmoothMoves`: Parameter smoothing
 
+## Attributions
+
+This plugin is based on code from the following projects:
+
+### JunoX
+- **Repository**: https://github.com/pendragon-andyh/junox
+- **Authors**: Originally by Daniele Zannotti, continued by Andy Harman (pendragon-andyh)
+- **License**: GPL-3.0-or-later
+- **Description**: JavaScript library that emulates the Roland Juno-60 synthesizer. The core synthesis engine (DCO, VCF, envelopes, LFO) is based on this implementation.
+
+### Junologue Chorus
+- **Repository**: https://github.com/peterall/junologue-chorus
+- **Author**: Peter Allwin
+- **License**: MIT License (Copyright 2020 Peter Allwin)
+- **Description**: Juno-60 chorus emulation for Korg Prologue, Minilogue XD and Nu:tekt NTS-1. The junologue chorus modes (4=I, 5=I-II, 6=II) are based on this implementation.
+- **Special Thanks**: Andy Harman and JP Cimalando for Juno 60 chorus research
+
 ## License
 
-GPL-3.0-or-later (same as original junox)
+GPL-3.0-or-later
+
+This plugin incorporates code from junologue-chorus (MIT License), which is compatible with the GPL-3.0-or-later license of this project.
