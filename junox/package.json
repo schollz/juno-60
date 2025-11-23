@@ -1,0 +1,53 @@
+{
+  "name": "junox.js",
+  "version": "0.3.0",
+  "license": "GPL-3.0-or-later",
+  "description": "Library for adding Juno60 synthesizer sounds to web applications (using Web Audio API)",
+  "main": "dist/synth.node.js",
+  "module": "dist/synth.node.mjs",
+  "jsnext:main": "dist/synth.node.mjs",
+  "repository": "github:pendragon-andyh/junox",
+  "homepage": "https://github.com/pendragon-andyh/junox",
+  "bugs": "https://github.com/pendragon-andyh/junox/issues",
+  "author": "Andy Harman <andyh.at.pendragon@gmail.com>",
+  "contributors": [
+    {
+      "name": "Daniele Zannotti"
+    }
+  ],
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "start": "esbuild --servedir=. --serve=8000",
+    "build-dev": "npm run build:processor && npm run build:module",
+    "build-prod": "npm run build:patches && npm run build:pretty && npm run lint && npm run build:processor && npm run build:module && npm run build:iife && npm run test",
+    "build:processor": "esbuild --bundle --outfile=dist/synth.worklet.txt --format=esm ./src/synth.worklet.js",
+    "build:module": "esbuild --bundle --outfile=dist/synth.node.mjs --format=esm --loader:.txt=dataurl ./src/synth.node.js",
+    "build:iife": "esbuild --bundle --outfile=dist/synth.node.js --format=iife --global-name=Junox ./dist/synth.node.mjs",
+    "build:patches": "node patches/Juno60.js",
+    "build:pretty": "prettier --write src",
+    "lint": "eslint .",
+    "test": "uvu tests",
+    "deploy:bump-version": "npm version patch",
+    "deploy:npm": "echo \"TODO - implement https://zellwk.com/blog/publish-to-npm/\"",
+    "deploy:github": "gh-pages --dist .",
+    "yarn:install": "yarn install",
+    "yarn:install-force": "yarn install --force",
+    "yarn:upgrade-latest": "yarn upgrade-interactive --latest",
+    "yarn:audit": "yarn audit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "csv-parser": "^3.0.0",
+    "esbuild": "^0.12.8",
+    "eslint": "^7.28.0",
+    "gh-pages": "^5.0.0",
+    "prettier": "^2.3.1",
+    "uvu": "^0.5.1"
+  },
+  "resolutions": {
+    "**/lodash": "4.17.21",
+    "**/minimist": "^1.2.0"
+  }
+}
