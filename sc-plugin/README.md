@@ -49,7 +49,7 @@ make SC_PATH=/path/to/supercollider install
 ### Parameters
 
 - `gate`: Gate signal (>0.5 = on, <=0.5 = off)
-- `note`: MIDI note number (0-127)
+- `freq`: MIDI note number (0-127)
 - `amp`: Amplitude/velocity (0-1)
 - `attack`: Attack time (0-1)
 - `decay`: Decay time (0-1)
@@ -73,7 +73,7 @@ make SC_PATH=/path/to/supercollider install
     var gate = Impulse.kr(2);
     var sig = Juno60.ar(
         gate: gate,
-        note: 36,
+        freq: 36,
         amp: 0.7,
         attack: 0.01,
         decay: 0.3,
