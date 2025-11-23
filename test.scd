@@ -39,9 +39,15 @@ s.waitForBoot({
 	s.sync;
 	
 	["gate 1"].postln;
-	a = Synth("juno", [\gate, 1, \note, 60-24]);
-	b = Synth("juno", [\gate, 1, \note, 64-12]);
-	c = Synth("juno", [\gate, 1, \note, 67]);
+	a = Synth("juno", [\gate, 1, \note, 60, \release, 2.0]).onFree({
+		"Released a".postln;
+	});
+	b = Synth("juno", [\gate, 1, \note, 64, \release, 1.8]).onFree({
+		"Released b".postln;
+	});
+	c = Synth("juno", [\gate, 1, \note, 67, \release, 1.9]).onFree({
+		"Released c".postln;
+	});
 
 	[2.0,3.0,4.0,5.0,6.0].do { |t|
 		SystemClock.sched(t, {
@@ -59,7 +65,8 @@ s.waitForBoot({
 		nil;
 	});
 	
-	SystemClock.sched(4.1, {
+	SystemClock.sched(7.0, {
+		"Test complete, exiting.".postln;
 		0.exit;
 		nil;
 	});
