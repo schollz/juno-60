@@ -60,20 +60,28 @@ else()
 endif()
 
 # Installation
-if(APPLE)
-    set(EXTENSION_DIR "$ENV{HOME}/Library/Application Support/SuperCollider/Extensions")
-elseif(WIN32)
-    set(EXTENSION_DIR "$ENV{LOCALAPPDATA}/SuperCollider/Extensions")
+# Determine installation destination
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    # Use default user Extensions directory
+    if(APPLE)
+        set(EXTENSION_DIR "$ENV{HOME}/Library/Application Support/SuperCollider/Extensions")
+    elseif(WIN32)
+        set(EXTENSION_DIR "$ENV{LOCALAPPDATA}/SuperCollider/Extensions")
+    else()
+        set(EXTENSION_DIR "$ENV{HOME}/.local/share/SuperCollider/Extensions")
+    endif()
+    set(INSTALL_DEST "${EXTENSION_DIR}/Juno60")
 else()
-    set(EXTENSION_DIR "$ENV{HOME}/.local/share/SuperCollider/Extensions")
+    # Respect CMAKE_INSTALL_PREFIX when explicitly set
+    set(INSTALL_DEST "Juno60")
 endif()
 
 install(TARGETS Juno60
-    DESTINATION "${EXTENSION_DIR}/Juno60"
+    DESTINATION "${INSTALL_DEST}"
 )
 
 install(FILES Juno60.sc
-    DESTINATION "${EXTENSION_DIR}/Juno60"
+    DESTINATION "${INSTALL_DEST}"
 )
 
 # Custom uninstall target
