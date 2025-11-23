@@ -1,5 +1,8 @@
 #include "SC_PlugIn.hpp"
 #include "Junox.hpp"
+#include <algorithm>
+#include <cmath>
+#include <string>
 
 static InterfaceTable* ft;
 
@@ -54,6 +57,20 @@ public:
     }
 
 private:
+    static std::string pwmModFromParam(float value) {
+        const int mode = static_cast<int>(std::round(value));
+        switch (mode) {
+        case 1:
+            return "l";
+        case 2:
+            return "m";
+        case 3:
+            return "e";
+        default:
+            return "";
+        }
+    }
+
     void next(int nSamples) {
         // Get input parameters
         const float* gateIn = in(0);
@@ -74,7 +91,16 @@ private:
         const float release = in0(6);
         
         // Filter parameters
-        const float cutoff = in0(7);
+        const float cutoffInput = in0(7);
+        float cutoff = cutoffInput;
+        if (cutoffInput > 1.0f) {
+            const float minFreq = 7.8f;
+            float freqHz = cutoffInput;
+            if (freqHz < minFreq) freqHz = minFreq;
+            const float semitoneRange = 200.0f;
+            const float normalized = (std::log2(freqHz / minFreq) * 12.0f) / semitoneRange;
+            cutoff = std::max(0.0f, std::min(1.0f, normalized));
+        }
         const float resonance = in0(8);
         const float envMod = in0(9);
         
@@ -87,6 +113,20 @@ private:
         
         // Chorus mode
         const float chorusMode = in0(15);
+        
+        // Extended parameters
+        const float lfoRate = in0(17);
+        const float lfoDelay = in0(18);
+        const float lfoAuto = in0(19);
+        const float dcoLfo = in0(20);
+        const float dcoPwmMod = in0(21);
+        const float dcoRange = in0(22);
+        const float hpfAmount = in0(23);
+        const float vcfLfo = in0(24);
+        const float vcfKey = in0(25);
+        const float vcfDir = in0(26);
+        const float vcaTypeInput = in0(27);
+        const float vcaValue = in0(28);
         
         float* outL = out(0);
         float* outR = out(1);
@@ -107,8 +147,22 @@ private:
         patch.dco.subAmount = subLevel;
         patch.dco.noise = noiseLevel;
         patch.dco.pwm = pwm;
+        patch.dco.lfo = dcoLfo;
+        patch.dco.pwmMod = pwmModFromParam(dcoPwmMod);
+        patch.dco.range = (dcoRange <= 0.0f) ? 1.0f : dcoRange;
         
         patch.chorus.mode = static_cast<int>(chorusMode);
+        patch.lfo.frequency = lfoRate;
+        patch.lfo.delay = lfoDelay;
+        patch.lfo.autoTrigger = lfoAuto > 0.5f;
+        
+        patch.hpf = std::max(0.0f, std::min(1.0f, hpfAmount));
+        patch.vcf.lfoMod = vcfLfo;
+        patch.vcf.keyMod = vcfKey;
+        patch.vcf.modPositive = vcfDir >= 0.5f;
+        
+        patch.vcaType = vcaTypeInput >= 0.5f ? "gate" : "env";
+        patch.vca = vcaValue;
         
         synth->update();
         

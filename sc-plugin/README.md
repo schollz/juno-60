@@ -51,11 +51,11 @@ make SC_PATH=/path/to/supercollider install
 - `gate`: Gate signal (>0.5 = on, <=0.5 = off)
 - `freq`: MIDI note number (0-127)
 - `amp`: Amplitude/velocity (0-1)
-- `attack`: Attack time (0-1)
-- `decay`: Decay time (0-1)
+- `attack`: Attack time in seconds
+- `decay`: Decay time in seconds
 - `sustain`: Sustain level (0-1)
-- `release`: Release time (0-1)
-- `cutoff`: Filter cutoff frequency (0-1)
+- `release`: Release time in seconds
+- `cutoff`: Filter cutoff (0-1 for normalized slider, or >1 for frequency in Hz)
 - `resonance`: Filter resonance (0-1)
 - `envMod`: Envelope modulation depth (0-1)
 - `saw`: Sawtooth wave on/off (0 or 1)
@@ -65,6 +65,18 @@ make SC_PATH=/path/to/supercollider install
 - `pwm`: Pulse width modulation (0-1)
 - `chorus`: Chorus mode (0=off, 1=I, 2=II, 3=I+II)
 - `doneAction`: DoneAction to perform when the release segment finishes (0=none, 2=free synth, etc.)
+- `lfoRate`: LFO rate (Hz, normalized 0-1 slider equivalent)
+- `lfoDelay`: LFO delay amount (0-1 slider equivalent)
+- `lfoAuto`: LFO auto-trigger (0=manual, 1=auto)
+- `dcoLfo`: Pitch LFO depth for the DCO (0-1)
+- `dcoPwmMod`: PWM modulation source selector (0=none, 1=LFO, 2=manual, 3=ENV)
+- `dcoRange`: Oscillator range multiplier (1.0 = normal)
+- `hpf`: High-pass filter amount (0-1)
+- `vcfLfo`: Filter LFO modulation depth (0-1)
+- `vcfKey`: Filter keyboard tracking amount (0-1)
+- `vcfDir`: Filter envelope polarity (0 = negative, 1 = positive)
+- `vcaType`: VCA control source (0 = envelope, 1 = gate)
+- `vcaValue`: VCA gain slider (roughly 0-1)
 
 ### Example
 

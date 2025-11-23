@@ -147,7 +147,7 @@ public:
     void updatePatch(const Patch& p) {
         patch = p;
         
-        modEnv.setValuesFromSliders(
+        modEnv.setValues(
             patch.env.attack,
             patch.env.decay,
             patch.env.sustain,
@@ -155,7 +155,7 @@ public:
         );
 
         if (patch.vcaType == "env") {
-            ampEnv.setValuesFromSliders(
+            ampEnv.setValues(
                 patch.env.attack,
                 patch.env.decay,
                 patch.env.sustain,
