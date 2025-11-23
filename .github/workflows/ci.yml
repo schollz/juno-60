@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Cache SuperCollider source
+      uses: actions/cache@v4
+      with:
+        path: supercollider
+        key: ${{ runner.os }}-supercollider-3.14.0
+        restore-keys: |
+          ${{ runner.os }}-supercollider-
+      # This caches the SuperCollider source that 'make' clones via sc-setup target
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          cmake \
+          git \
+          pkg-config \
+          libjack-jackd2-dev \
+          jackd2 \
+          supercollider \
+          xvfb
+      # supercollider package provides sclang binary, source is cloned by make
+      # xvfb provides virtual display for headless SuperCollider execution
+    
+    - name: Start JACK in dummy mode
+      run: |
+        # Start JACK in dummy (no audio output) mode in the background
+        jackd -d dummy -r 48000 -p 1024 &
+        JACK_PID=$!
+        
+        # Verify JACK started successfully
+        if ! kill -0 $JACK_PID 2>/dev/null; then
+          echo "Error: JACK failed to start"
+          exit 1
+        fi
+        
+        echo "JACK_PID=$JACK_PID" >> $GITHUB_ENV
+        
+        # Wait for JACK to be ready with retry loop
+        for i in {1..10}; do
+          if jack_lsp >/dev/null 2>&1; then
+            echo "JACK is ready"
+            break
+          fi
+          echo "Waiting for JACK to be ready... (attempt $i/10)"
+          sleep 1
+        done
+        
+        # Final verification
+        jack_lsp || echo "Warning: JACK may not be fully ready"
+    
+    - name: Build plugin
+      run: make
+    
+    - name: Install plugin
+      run: make install
+    
+    - name: Run tests
+      run: |
+        # Run with xvfb for headless display support
+        xvfb-run -a make test
+    
+    - name: Stop JACK
+      if: always()
+      run: |
+        # Clean up JACK process
+        if [ -n "$JACK_PID" ]; then
+          kill $JACK_PID || true
+        fi
