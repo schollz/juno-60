@@ -127,7 +127,8 @@ private:
         const float vcfDir = in0(26);
         const float vcaTypeInput = in0(27);
         const float vcaValue = in0(28);
-        
+        const float chorusDrywet = in0(29);
+
         float* outL = out(0);
         float* outR = out(1);
         
@@ -152,6 +153,7 @@ private:
         patch.dco.range = (dcoRange <= 0.0f) ? 1.0f : dcoRange;
         
         patch.chorus.mode = static_cast<int>(chorusMode);
+        patch.chorus.drywet = std::max(0.0f, std::min(1.0f, chorusDrywet));
         patch.lfo.frequency = lfoRate;
         patch.lfo.delay = lfoDelay;
         patch.lfo.autoTrigger = lfoAuto > 0.5f;

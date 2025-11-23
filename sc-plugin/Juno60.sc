@@ -7,8 +7,8 @@ Juno60 : MultiOutUGen {
           lfoRate=0.5, lfoDelay=0.0, lfoAuto=0,
           dcoLfo=0.0, dcoPwmMod=0, dcoRange=1.0,
           hpf=0.0, vcfLfo=0.0, vcfKey=1.0, vcfDir=1.0,
-          vcaType=0.0, vcaValue=0.5;
-        
+          vcaType=0.0, vcaValue=0.5, chorusDrywet=1.0;
+
         ^this.multiNew('audio', gate, note, amp,
             attack, decay, sustain, release,
             cutoff, resonance, envMod,
@@ -17,7 +17,7 @@ Juno60 : MultiOutUGen {
             lfoRate, lfoDelay, lfoAuto,
             dcoLfo, dcoPwmMod, dcoRange,
             hpf, vcfLfo, vcfKey, vcfDir,
-            vcaType, vcaValue)
+            vcaType, vcaValue, chorusDrywet)
     }
     
     *kr { arg gate=0, note=60, amp=0.5,
@@ -28,8 +28,8 @@ Juno60 : MultiOutUGen {
           lfoRate=0.5, lfoDelay=0.0, lfoAuto=0,
           dcoLfo=0.0, dcoPwmMod=0, dcoRange=1.0,
           hpf=0.0, vcfLfo=0.0, vcfKey=1.0, vcfDir=1.0,
-          vcaType=0.0, vcaValue=0.5;
-        
+          vcaType=0.0, vcaValue=0.5, chorusDrywet=1.0;
+
         ^this.multiNew('control', gate, note, amp,
             attack, decay, sustain, release,
             cutoff, resonance, envMod,
@@ -38,7 +38,7 @@ Juno60 : MultiOutUGen {
             lfoRate, lfoDelay, lfoAuto,
             dcoLfo, dcoPwmMod, dcoRange,
             hpf, vcfLfo, vcfKey, vcfDir,
-            vcaType, vcaValue)
+            vcaType, vcaValue, chorusDrywet)
     }
     
     checkInputs {

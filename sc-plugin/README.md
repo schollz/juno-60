@@ -63,7 +63,7 @@ make SC_PATH=/path/to/supercollider install
 - `sub`: Sub-oscillator level (0-1)
 - `noise`: Noise level (0-1)
 - `pwm`: Pulse width modulation (0-1)
-- `chorus`: Chorus mode (0=off, 1=I, 2=II, 3=I+II)
+- `chorus`: Chorus mode (0=off, 1=I, 2=II, 3=I+II, 4=I(junologue), 5=I-II(junologue), 6=II(junologue))
 - `doneAction`: DoneAction to perform when the release segment finishes (0=none, 2=free synth, etc.)
 - `lfoRate`: LFO rate (Hz, normalized 0-1 slider equivalent)
 - `lfoDelay`: LFO delay amount (0-1 slider equivalent)
@@ -77,6 +77,7 @@ make SC_PATH=/path/to/supercollider install
 - `vcfDir`: Filter envelope polarity (0 = negative, 1 = positive)
 - `vcaType`: VCA control source (0 = envelope, 1 = gate)
 - `vcaValue`: VCA gain slider (roughly 0-1)
+- `chorusDrywet`: Chorus dry/wet mix (0.0 = fully dry, 1.0 = fully wet)
 
 ### Example
 

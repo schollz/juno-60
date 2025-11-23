@@ -10,15 +10,16 @@ s.waitForBoot({
 				decay: 0.0,
 				sustain: 1.0,
 				release: 2.0,
-				cutoff: 0.5,
+				cutoff: 0.4,
 				resonance: 0.0,
 				envMod: 0.0,
 				saw: 1,
-				pulse: 1.0,
+				pulse: 0.3,
 				sub: 1.0,
 				noise: 0.0,
 				pwm: 0.7,
-				chorus: 2,
+				chorus: 5,
+				chorusDrywet: 0.5,
 				lfoRate: 0.3,
 				lfoDelay: 0.8,
 				lfoAuto: 0,
@@ -27,10 +28,10 @@ s.waitForBoot({
 				dcoRange: 1.0,
 				hpf: 0.0,
 				vcfLfo: 0.0,
-				vcfKey: 1.0,
+				vcfKey: 0.8,
 				vcfDir: 1.0,
 				vcaType: 0.0,
-				vcaValue: 0.3,
+				vcaValue: 0.8,
 				doneAction: 2
 			));
 		}).add;
@@ -38,9 +39,9 @@ s.waitForBoot({
 	s.sync;
 	
 	["gate 1"].postln;
-	a = Synth("juno", [\gate, 1, \note, 60]);
-	b = Synth("juno", [\gate, 1, \note, 64]);
-	c = Synth("juno", [\gate, 1, \note, 67]);
+	a = Synth("juno", [\gate, 1, \note, 60-12]);
+	b = Synth("juno", [\gate, 1, \note, 64-12]);
+	c = Synth("juno", [\gate, 1, \note, 67-12]);
 
 	[2.0,3.0,4.0,5.0,6.0].do { |t|
 		SystemClock.sched(t, {

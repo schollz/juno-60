@@ -264,7 +264,7 @@ public:
         filterLfoModParam.setValue(patch.vcf.lfoMod, isActive);
         filterKeyModParam.setValue(patch.vcf.keyMod, isActive);
 
-        chorus.update(patch.chorus.mode);
+        chorus.update(patch.chorus.mode, patch.chorus.drywet);
         setLfoValuesFromSliders(patch.lfo.frequency, patch.lfo.delay);
         setHpfValuesFromSliders(patch.hpf);
 

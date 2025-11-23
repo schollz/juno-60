@@ -48,7 +48,8 @@ struct Patch {
     } lfo;
 
     struct ChorusConfig {
-        int mode = 0; // 0=off, 1=I, 2=II, 3=I+II
+        int mode = 0; // 0=off, 1=I, 2=II, 3=I+II, 4=I(junologue), 5=I-II(junologue), 6=II(junologue)
+        float drywet = 1.0f; // 0.0 = fully dry, 1.0 = fully wet
     } chorus;
 };
 
