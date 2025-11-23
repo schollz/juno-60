@@ -6,7 +6,7 @@ s.waitForBoot({
 				gate: gate,
 				note: note,
 				amp: 1.0,
-				attack: 4.0,
+				attack: 2.0,
 				decay: 0.0,
 				sustain: 1.0,
 				release: 2.0,
@@ -22,7 +22,7 @@ s.waitForBoot({
 				lfoRate: 0.3,
 				lfoDelay: 0.8,
 				lfoAuto: 0,
-				dcoLfo: 0.0,
+				dcoLfo: 0.05,
 				dcoPwmMod: 1,
 				dcoRange: 1.0,
 				hpf: 0.0,
@@ -42,13 +42,15 @@ s.waitForBoot({
 	b = Synth("juno", [\gate, 1, \note, 64]);
 	c = Synth("juno", [\gate, 1, \note, 67]);
 
-	SystemClock.sched(4.0, {
-		// print out CPU usage
-		["CPU Usage: ", Server.default.avgCPU].postln;
-		nil;
-	});
+	[2.0,3.0,4.0,5.0,6.0].do { |t|
+		SystemClock.sched(t, {
+			// print out CPU usage
+			["CPU Usage: ", Server.default.avgCPU, Server.default.peakCPU].postln;
+			nil;
+		});
+	};
 	
-	SystemClock.sched(4.0, {
+	SystemClock.sched(2.0, {
 		["gate 0"].postln;
 		a.set(\gate, 0);
 		b.set(\gate, 0);
@@ -56,7 +58,7 @@ s.waitForBoot({
 		nil;
 	});
 	
-	SystemClock.sched(6.1, {
+	SystemClock.sched(4.1, {
 		0.exit;
 		nil;
 	});
