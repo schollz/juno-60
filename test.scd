@@ -3,7 +3,7 @@ s.waitForBoot({
 	SynthDef("juno",{
 		Out.ar(0,Juno60.ar(
         gate: 1,
-		freq: 60, // actually note
+	note:  60, // actually note
         amp: 0.5,
         attack: 2,
         decay: 0.4,

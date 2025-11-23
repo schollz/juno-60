@@ -65,7 +65,7 @@ clean:
 	@echo "Cleaning build files..."
 	@rm -rf $(BUILD_DIR)
 
-test: uninstall clean install
+test: uninstall clean all install
 	timeout 6s sclang test.scd
 
 help:
