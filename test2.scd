@@ -13,9 +13,9 @@ s.waitForBoot({
 			decay: 0.1,
 			sustain: 0.6,
 			release: 0.8,
-			cutoff: MouseY.kr(0.0, 1.0),  // Control cutoff with mouse Y position
+			cutoff: MouseY.kr(0.0, 1.0).poll,  // Control cutoff with mouse Y position, 0.3
 			resonance: 0.3,
-			envMod: MouseX.kr(0.0, 1.0),  // Control envelope modulation with mouse X position
+			envMod: MouseX.kr(0.0, 1.0).poll,  // Control envelope modulation with mouse X position, 0.2
 			saw: 1,
 			pulse: 0.3,
 			sub: 0.8,
